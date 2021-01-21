@@ -14,6 +14,6 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment_test)
 
-        //contextual_cards.init(this)
+        contextual_cards.init(this)
     }
 }

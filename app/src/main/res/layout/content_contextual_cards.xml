@@ -19,4 +19,28 @@
         android:visibility="gone"
         android:layout_gravity="center"
         />
+
+    <LinearLayout
+        android:id="@+id/contextual_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="@string/label_something_went_wrong"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/contextual_retry"
+            android:layout_width="wrap_content"
+            android:text="@string/action_retry"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
 </merge>

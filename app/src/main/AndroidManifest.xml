@@ -22,7 +22,6 @@
 
         <activity android:name=".demo.SecondActivity"/>
 
-
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.fampay.contextualcards.demo
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.fampay.contextualcards.R
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
         contextual_cards.init(this)
 
-       //Uncomment to test starting another activity with contextual card inside it
-      //startActivity(Intent(this,SecondActivity::class.java))
+        //Uncomment to test starting another activity with contextual card inside it
+        //startActivity(Intent(this,SecondActivity::class.java))
     }
 }

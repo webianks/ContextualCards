@@ -2,4 +2,6 @@
     <string name="app_name">ContextualCards</string>
     <string name="action_dismiss_now">Dismiss Now</string>
     <string name="action_remind_later">Remind Later</string>
+    <string name="label_something_went_wrong">Something went wrong, Please retry!</string>
+    <string name="action_retry">Retry</string>
 </resources>

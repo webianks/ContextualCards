@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.fampay.contextualcards.R
 import com.fampay.contextualcards.contextual_cards.data.network.response.CardGroupResponse
 import com.fampay.contextualcards.contextual_cards.util.*
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.content_contextual_cards.view.*
 
 class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayout(context, atts),
@@ -35,6 +36,8 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
+    private lateinit var errorView: View
+    private lateinit var retryButton: MaterialButton
 
     init {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey))
@@ -59,9 +62,15 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
         swipeRefresh = swipe_refresh_contextual
         recyclerView = recycler_view_contextual
         progressBar = progress_contextual
+        errorView = contextual_error
+        retryButton = contextual_retry
         swipeRefresh.setOnRefreshListener {
             mainViewModel?.getCardGroups(refreshing = true)
         }
+        retryButton.setOnClickListener {
+            mainViewModel?.getCardGroups()
+        }
+
         addObservers()
     }
 
@@ -94,51 +103,50 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
         if (mActivity != null) {
             mActivity?.let { activity ->
                 mainViewModel?.cardGroupUiState?.observe(activity) {
-                    when (it) {
-                        Loading -> {
-                            progressBar.visibility = View.VISIBLE
-                        }
-
-                        is Success<*> -> {
-                            setSuccessBehaviour(it)
-                        }
-
-                        Failed -> {
-                           failedStateBehaviour()
-                        }
-                        else -> {
-                            failedStateBehaviour()
-                        }
-                    }
+                  onObserverStateChange(it)
                 }
             }
         } else {
             mFragment?.let { fragment ->
                 mainViewModel?.cardGroupUiState?.observe(fragment) {
-                    when (it) {
-                        Loading -> {
-                            progressBar.visibility = View.VISIBLE
-                        }
-
-                        is Success<*> -> {
-                            setSuccessBehaviour(it)
-                        }
-
-                        Failed -> {
-                            failedStateBehaviour()
-                        }
-                        else -> {
-                            failedStateBehaviour()
-                        }
-                    }
+                    onObserverStateChange(it)
                 }
             }
         }
     }
 
+    private fun onObserverStateChange(it: UiState) {
+        when (it) {
+            Loading -> {
+                loadingStateBehaviour()
+            }
+            is Success<*> -> {
+                setSuccessBehaviour(it)
+            }
+            Failed -> {
+                failedStateBehaviour()
+            }
+            else -> {
+                defaultStateBehaviour()
+            }
+        }
+    }
+
+    private fun loadingStateBehaviour(){
+        progressBar.visibility = View.VISIBLE
+        errorView.visibility = View.GONE
+    }
+
+    private fun defaultStateBehaviour() {
+        progressBar.visibility = View.GONE
+        swipeRefresh.isRefreshing = false
+        errorView.visibility = View.GONE
+    }
+
     private fun failedStateBehaviour() {
         progressBar.visibility = View.GONE
         swipeRefresh.isRefreshing = false
+        errorView.visibility = View.VISIBLE
     }
 
     private fun setSuccessBehaviour(uiState: Success<*>) {
