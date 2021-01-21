@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.item_view_small_display.view.*
 class HorizontalRecyclerViewAdapter(
     private val context: Context,
     val list: List<Card>,
-    val type: Int
+    val type: Int,
+    val actionListener: ((String) -> Unit)? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mRecyclerView: RecyclerView? = null
@@ -29,6 +30,12 @@ class HorizontalRecyclerViewAdapter(
     }
 
     private inner class HorizontalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].url)
+            }
+        }
 
         fun bind(position: Int) {
 

@@ -9,6 +9,7 @@ import com.fampay.contextualcards.BuildConfig
 import com.fampay.contextualcards.R
 import com.fampay.contextualcards.data.network.Networking
 import com.fampay.contextualcards.util.ViewModelProviderFactory
+import com.fampay.contextualcards.util.openUrl
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -37,7 +38,9 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.cardGroupResponseData.observe(this) {
             Log.i(TAG, "CardGroupResponse count ${it.cardGroups.size}")
             rv_main.layoutManager = LinearLayoutManager(this)
-            rv_main.adapter = MainRecyclerViewAdapter(this, it.cardGroups)
+            rv_main.adapter = MainRecyclerViewAdapter(this, it.cardGroups){ url ->
+                openUrl(this, url)
+            }
         }
     }
 }

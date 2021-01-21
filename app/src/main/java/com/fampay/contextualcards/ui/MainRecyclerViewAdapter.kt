@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.item_view_image.view.*
 import kotlinx.android.synthetic.main.item_view_image.view.iv_image
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 
-class MainRecyclerViewAdapter(private val context: Context, val list: List<CardGroup>) :
+class MainRecyclerViewAdapter(private val context: Context, val list: List<CardGroup>,
+                              val actionListener: ((String) -> Unit)? = null) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
 
     companion object {
         const val HC1 = 1
@@ -54,7 +54,8 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
                 itemView.recyclerView.adapter = HorizontalRecyclerViewAdapter(
                     context,
                     cardGroup.cards,
-                    HC1
+                    HC1,
+                    actionListener
                 )
                 itemView.recyclerView.layoutManager = LinearLayoutManager(
                     context,
@@ -105,6 +106,9 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
                     if (smallDisplayCard is MaterialCardView && card.bgColor != null)
                         smallDisplayCard.setCardBackgroundColor(Color.parseColor(card.bgColor))
 
+                    smallDisplayCard.setOnClickListener {
+                        actionListener?.invoke(card.url)
+                    }
                 }
             }
         }
@@ -112,6 +116,11 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
 
     private inner class HC3ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        init {
+            itemView.bt_cta.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].cards.first().ctaList.first().url)
+            }
+        }
 
         fun bind(position: Int) {
             val cardGroup = list[position]
@@ -144,6 +153,12 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
 
     private inner class HC5ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        init {
+            itemView.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].cards.first().url)
+            }
+        }
+
         fun bind(position: Int) {
             val cardGroup = list[position]
             val card = cardGroup.cards.first()
@@ -152,6 +167,12 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
     }
 
     private inner class HC6ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].cards.first().url)
+            }
+        }
 
         fun bind(position: Int) {
             val cardGroup = list[position]
@@ -170,12 +191,19 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
 
     private inner class HC9ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        init {
+            itemView.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].cards.first().url)
+            }
+        }
+
         fun bind(position: Int) {
             val cardGroup = list[position]
             itemView.recyclerView.adapter = HorizontalRecyclerViewAdapter(
                 context,
                 cardGroup.cards,
-                HC9
+                HC9,
+                actionListener
             )
             itemView.recyclerView.layoutManager = LinearLayoutManager(
                 context,
