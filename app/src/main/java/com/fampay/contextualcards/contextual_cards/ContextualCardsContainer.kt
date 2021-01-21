@@ -166,5 +166,7 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
                     //Card dismissed listener
                     setCardDismissed(context, which)
             })
+        recyclerView.addItemDecoration(MarginItemDecoration(
+            resources.getDimension(R.dimen.margin_8dp).toInt()))
     }
 }

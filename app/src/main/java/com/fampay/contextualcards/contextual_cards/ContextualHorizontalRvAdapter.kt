@@ -27,9 +27,11 @@ import kotlinx.android.synthetic.main.item_view_small_display.view.*
 class ContextualHorizontalRvAdapter(
     private val context: Context,
     val list: ArrayList<Card>,
-    val type: Int,
+    private val type: Int,
     val actionListener: ((String) -> Unit)? = null,
     val hc9Height: Int? = null,
+    val cardDismissListener: ((String) -> Unit)? = null
+
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mRecyclerView: RecyclerView? = null
@@ -86,13 +88,21 @@ class ContextualHorizontalRvAdapter(
                 true
             }
 
+
             itemView.cv_remind_later.setOnClickListener {
                 list.removeAt(adapterPosition)
                 notifyItemRemoved(adapterPosition)
             }
 
+            /**
+             *  Here using name of the card as unique key because we may have other cards
+             *  in the group and we don't have id in the schema of card to use it as unique
+             *  for the same reason we can't use id of the card group also.
+             */
             itemView.cv_dismiss_now.setOnClickListener {
-
+                cardDismissListener?.invoke(list[adapterPosition].name)
+                list.removeAt(adapterPosition)
+                notifyItemRemoved(adapterPosition)
             }
         }
 

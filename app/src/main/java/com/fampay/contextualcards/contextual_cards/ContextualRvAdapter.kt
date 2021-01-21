@@ -69,6 +69,8 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
+                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -135,7 +137,8 @@ class ContextualRvAdapter(
                     context,
                     cardGroup.cards,
                     HC3,
-                    actionListener
+                    actionListener,
+                    cardDismissListener = cardDismissListener
                 )
                 itemView.recyclerView.layoutManager = LinearLayoutManager(
                     context,
@@ -143,6 +146,8 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
+                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -219,7 +224,7 @@ class ContextualRvAdapter(
                         true
                     }
 
-                    itemView.cv_remind_later.setOnClickListener {
+                    bigDisplayCard.cv_remind_later.setOnClickListener {
                         //list.removeAt(adapterPosition)
                         //notifyItemRemoved(adapterPosition)
                         itemView.ll_card_container.removeView(bigDisplayCard)
@@ -230,7 +235,7 @@ class ContextualRvAdapter(
                      *  in the group and we dont have id in the schema of card to use it as unique
                      *  for the same reason we can't use id of the card group also.
                      */
-                    itemView.cv_dismiss_now.setOnClickListener {
+                    bigDisplayCard.cv_dismiss_now.setOnClickListener {
                         cardDismissListener(card.name)
                         itemView.ll_card_container.removeView(bigDisplayCard)
                     }
@@ -257,6 +262,8 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
+                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -318,6 +325,8 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
+                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -387,6 +396,8 @@ class ContextualRvAdapter(
                 false
             )
             itemView.recyclerView.setHasFixedSize(true)
+            itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
+                context.resources.getDimension(R.dimen.margin_8dp).toInt()))
         }
     }
 
