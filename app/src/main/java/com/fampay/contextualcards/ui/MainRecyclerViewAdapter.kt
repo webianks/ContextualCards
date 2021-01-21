@@ -14,7 +14,9 @@ import com.fampay.contextualcards.data.network.response.CardGroup
 import com.fampay.contextualcards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_scrollable.view.*
+import kotlinx.android.synthetic.main.item_view_big_display.view.*
 import kotlinx.android.synthetic.main.item_view_image.view.*
+import kotlinx.android.synthetic.main.item_view_image.view.iv_image
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 
 class MainRecyclerViewAdapter(private val context: Context, val list: List<CardGroup>) :
@@ -108,6 +110,38 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
         }
     }
 
+    private inner class HC3ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+
+        fun bind(position: Int) {
+            val cardGroup = list[position]
+            val card = cardGroup.cards.first()
+
+            Glide.with(itemView.context).load(card.backgroundImage.imgUrl).into(itemView.iv_image)
+
+            itemView.tv_big_title.text = card.formattedTitle.text
+
+            if (card.formattedDescription != null) {
+                itemView.tv_big_description.text = card.formattedDescription.text
+                itemView.tv_big_description.visibility = View.VISIBLE
+            } else
+                itemView.tv_big_description.visibility = View.GONE
+
+            if (card.ctaList.isNotEmpty()) {
+                val cta = card.ctaList.first()
+                itemView.bt_cta.text = cta.text
+                itemView.bt_cta.setTextColor(Color.parseColor(cta.textColor))
+                itemView.bt_cta.setBackgroundColor(Color.parseColor(cta.backgroundColor))
+                itemView.bt_cta.visibility = View.VISIBLE
+            } else
+                itemView.bt_cta.visibility = View.GONE
+
+            //if (itemView is MaterialCardView && card.bgColor != null)
+            //itemView.setCardBackgroundColor(Color.parseColor(card.bgColor))
+
+        }
+    }
+
     private inner class HC5ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(position: Int) {
@@ -164,9 +198,9 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
                 )
             }
             HC3 -> {
-                return DummyViewHolder(
+                return HC3ViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_dummy,
+                        R.layout.item_view_big_display,
                         parent,
                         false
                     )
@@ -221,7 +255,7 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
                 (holder as HC1ViewHolder).bind(position)
             }
             HC3 -> {
-                (holder as DummyViewHolder).bind(position)
+                (holder as HC3ViewHolder).bind(position)
             }
             HC5 -> {
                 (holder as HC5ViewHolder).bind(position)
