@@ -11,6 +11,7 @@ import com.fampay.contextualcards.R
 import com.fampay.contextualcards.data.network.response.Card
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC1
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC5
+import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC6
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC9
 import com.fampay.contextualcards.util.px
 import com.google.android.material.card.MaterialCardView
@@ -85,6 +86,33 @@ class ContextualHorizontalRvAdapter(
         }
     }
 
+    private inner class HC6ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].url)
+            }
+        }
+
+        fun bind(position: Int) {
+            val card = list[position]
+
+            itemView.tv_title.text = card.formattedTitle.text
+
+            if (card.formattedDescription != null) {
+                itemView.tv_description.text = card.formattedDescription.text
+                itemView.tv_description.visibility = View.VISIBLE
+            } else
+                itemView.tv_description.visibility = View.GONE
+
+            card.icon.imgUrl?.let {
+                Glide.with(itemView.context)
+                    .load(it)
+                    .into(itemView.iv_icon)
+            }
+        }
+    }
+
     private inner class HC9ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         init {
@@ -124,6 +152,12 @@ class ContextualHorizontalRvAdapter(
                         .inflate(R.layout.item_view_scrollable_image, parent, false)
                 )
             }
+            HC6 -> {
+                HC6ViewHolder(
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.item_view_small_display_arrow, parent, false)
+                )
+            }
             HC9 -> {
                 HC9ViewHolder(
                     LayoutInflater.from(context)
@@ -148,6 +182,9 @@ class ContextualHorizontalRvAdapter(
         when (type) {
             HC5 -> {
                 (holder as HC5ViewHolder).bind(position)
+            }
+            HC6 -> {
+                (holder as HC6ViewHolder).bind(position)
             }
             HC1 -> {
                 (holder as HC1ViewHolder).bind(position)
