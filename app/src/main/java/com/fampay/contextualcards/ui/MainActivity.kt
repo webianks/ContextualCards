@@ -3,6 +3,7 @@ package com.fampay.contextualcards.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.fampay.contextualcards.ServiceLocator
 import com.fampay.contextualcards.data.network.Networking
 import com.fampay.contextualcards.data.network.response.CardGroupResponse
 import com.fampay.contextualcards.util.*
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -31,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ServiceLocator.getMainViewModel(this)
         mainViewModel.getCardGroups()
 
+        swipe_refresh.setOnRefreshListener {
+            mainViewModel.getCardGroups(refreshing = true)
+        }
+
         addObservers()
     }
 
@@ -41,8 +47,10 @@ class MainActivity : AppCompatActivity() {
                 Loading -> {
                     main_progress.visibility = View.VISIBLE
                 }
+
                 is Success<*> -> {
                     main_progress.visibility = View.GONE
+                    swipe_refresh.isRefreshing = false
 
                     val cardGroupResponse = it.data as CardGroupResponse
 
@@ -53,13 +61,17 @@ class MainActivity : AppCompatActivity() {
                             openUrl(this, url)
                         }
                 }
+
                 Failed -> {
                     main_progress.visibility = View.GONE
+                    swipe_refresh.isRefreshing = false
                 }
                 else -> {
                     main_progress.visibility = View.GONE
+                    swipe_refresh.isRefreshing = false
                 }
             }
         }
     }
+
 }

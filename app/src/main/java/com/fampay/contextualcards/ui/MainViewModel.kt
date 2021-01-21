@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.fampay.contextualcards.data.network.NetworkService
 import com.fampay.contextualcards.data.network.response.CardGroupResponse
-import com.fampay.contextualcards.util.Failed
-import com.fampay.contextualcards.util.Loading
-import com.fampay.contextualcards.util.Success
-import com.fampay.contextualcards.util.UiState
+import com.fampay.contextualcards.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,8 +20,11 @@ class MainViewModel(
     companion object{
         const val TAG = "MainViewModel"
     }
-    fun getCardGroups() {
-        cardGroupUiState.postValue(Loading)
+    fun getCardGroups(refreshing: Boolean = false) {
+        if(refreshing)
+            cardGroupUiState.postValue(Refreshing)
+        else
+           cardGroupUiState.postValue(Loading)
         compositeDisposable.addAll(
             networkService.doGetCardGroupsCall()
                 .subscribeOn(Schedulers.io())
