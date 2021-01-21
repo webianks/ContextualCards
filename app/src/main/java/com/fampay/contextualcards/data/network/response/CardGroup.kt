@@ -26,5 +26,5 @@ data class CardGroup(
     val level: Int,
 
     @SerializedName("height")
-    val height: Long,
+    val height: Int,
 )

@@ -333,19 +333,14 @@ class ContextualRvAdapter(
 
     private inner class HC9ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        init {
-            itemView.setOnClickListener {
-                actionListener?.invoke(list[adapterPosition].cards.first().url)
-            }
-        }
-
         fun bind(position: Int) {
             val cardGroup = list[position]
             itemView.recyclerView.adapter = ContextualHorizontalRvAdapter(
                 context,
                 cardGroup.cards,
                 HC9,
-                actionListener
+                actionListener,
+                cardGroup.height
             )
             itemView.recyclerView.layoutManager = LinearLayoutManager(
                 context,

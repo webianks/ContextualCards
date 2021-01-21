@@ -12,6 +12,7 @@ import com.fampay.contextualcards.data.network.response.Card
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC1
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC5
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC9
+import com.fampay.contextualcards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_dynamic_width.view.*
 import kotlinx.android.synthetic.main.item_view_scrollable_image.view.*
@@ -21,7 +22,8 @@ class ContextualHorizontalRvAdapter(
     private val context: Context,
     val list: List<Card>,
     val type: Int,
-    val actionListener: ((String) -> Unit)? = null
+    val actionListener: ((String) -> Unit)? = null,
+    val hc9Height: Int? = null,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mRecyclerView: RecyclerView? = null
@@ -60,46 +62,6 @@ class ContextualHorizontalRvAdapter(
         }
     }
 
-    private inner class HC9ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        init {
-            itemView.setOnClickListener {
-                actionListener?.invoke(list[adapterPosition].url)
-            }
-        }
-
-        fun bind(position: Int) {
-
-            val card = list[position]
-
-            if (type == HC1) {
-
-                itemView.tv_title.text = card.formattedTitle.text
-                if (card.formattedDescription != null) {
-                    itemView.tv_description.text = card.formattedDescription.text
-                    itemView.tv_description.visibility = View.VISIBLE
-                } else
-                    itemView.tv_description.visibility = View.GONE
-
-                Glide.with(itemView.context)
-                    .load(card.icon.imgUrl)
-                    .placeholder(R.drawable.default_icon_background)
-                    .error(R.drawable.default_icon_background)
-                    .into(itemView.iv_icon)
-
-                if (itemView is MaterialCardView && card.bgColor != null)
-                    itemView.setCardBackgroundColor(Color.parseColor(card.bgColor))
-
-            } else {
-                val layoutParams = itemView.layoutParams
-                layoutParams.width =
-                    (layoutParams.height * card.backgroundImage.aspectRatio).toInt()
-                Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
-                    .into(itemView.iv_image_dynamic)
-            }
-        }
-    }
-
     private inner class HC5ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         init {
@@ -115,6 +77,28 @@ class ContextualHorizontalRvAdapter(
             layoutParams.width = (layoutParams.height * card.backgroundImage.aspectRatio).toInt()
             Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
                 .into(itemView.iv_scrollable_image)
+        }
+    }
+
+    private inner class HC9ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.setOnClickListener {
+                actionListener?.invoke(list[adapterPosition].url)
+            }
+        }
+
+        fun bind(position: Int) {
+            val card = list[position]
+            val layoutParams = itemView.layoutParams
+            //set the hc9 card height sent from the parent card_group
+            hc9Height?.let {
+                layoutParams.height = it.px
+            }
+            //set width of this card based on the aspect ratio od the image
+            layoutParams.width = (layoutParams.height * card.backgroundImage.aspectRatio).toInt()
+            Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
+                .into(itemView.iv_image_dynamic)
         }
     }
 
