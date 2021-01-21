@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.cardGroupResponseData.observe(this) {
             Log.i(TAG, "CardGroupResponse count ${it.cardGroups.size}")
             rv_main.layoutManager = LinearLayoutManager(this)
-            rv_main.adapter = MainRecyclerViewAdapter(this, listOf("A","B","C"))
+            rv_main.adapter = MainRecyclerViewAdapter(this, it.cardGroups)
         }
     }
 }

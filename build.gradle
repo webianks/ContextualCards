@@ -43,6 +43,9 @@ ext {
     rxjava_version = '2.2.9'
     rxandroid_version = '2.1.0'
 
+    //Image
+    glide_version = '4.11.0'
+
     //Parser
     gson_version = '2.4.0'
 }
