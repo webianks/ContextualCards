@@ -1,7 +1,11 @@
 package com.fampay.contextualcards.ui
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.fampay.contextualcards.R
+import com.fampay.contextualcards.data.network.response.Card
 import com.fampay.contextualcards.data.network.response.CardGroup
 import com.fampay.contextualcards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_scrollable.view.*
 import kotlinx.android.synthetic.main.item_view_big_display.view.*
-import kotlinx.android.synthetic.main.item_view_image.view.*
 import kotlinx.android.synthetic.main.item_view_image.view.iv_image
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 
-class MainRecyclerViewAdapter(private val context: Context, val list: List<CardGroup>,
-                              val actionListener: ((String) -> Unit)? = null) :
+class MainRecyclerViewAdapter(
+    private val context: Context, val list: List<CardGroup>,
+    val actionListener: ((String) -> Unit)? = null
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -119,6 +125,15 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
         init {
             itemView.bt_cta.setOnClickListener {
                 actionListener?.invoke(list[adapterPosition].cards.first().ctaList.first().url)
+            }
+
+            itemView.setOnLongClickListener {
+                slideAndRevealView(
+                    itemView.view_foreground,
+                    itemView.view_background,
+                    list[adapterPosition].cards.first()
+                )
+                true
             }
         }
 
@@ -299,6 +314,31 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
 
     override fun getItemViewType(position: Int): Int {
         return viewTypeMap[list[position].designType] ?: 1
+    }
+
+
+    /**
+     * Animate the foreground view by revealing the background view with actions
+     * and also vibrate at the same time
+     */
+    fun slideAndRevealView(foreground: View, background: View, card: Card) {
+        if (card.isOpen) {
+            val animation = ObjectAnimator.ofFloat(foreground, "translationX", 0f)
+            animation.duration = 100
+            background.view_background.visibility = View.GONE
+            animation.start()
+            val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+            v!!.vibrate(50)
+            card.isOpen = false
+        } else {
+            val animation = ObjectAnimator.ofFloat(foreground, "translationX", 450f)
+            animation.duration = 100
+            background.view_background.visibility = View.VISIBLE
+            animation.start()
+            val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+            v!!.vibrate(50)
+            card.isOpen = true
+        }
     }
 
 }
