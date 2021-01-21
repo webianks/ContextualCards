@@ -51,11 +51,13 @@ class ContextualHorizontalRvAdapter(
             } else
                 itemView.tv_description.visibility = View.GONE
 
-            Glide.with(itemView.context)
-                .load(card.icon.imgUrl)
-                .placeholder(R.drawable.default_icon_background)
-                .error(R.drawable.default_icon_background)
-                .into(itemView.iv_icon)
+            card.icon.imgUrl?.let {
+                Glide.with(itemView.context)
+                    .load(it)
+                    .placeholder(R.drawable.default_icon_background)
+                    .error(R.drawable.default_icon_background)
+                    .into(itemView.iv_icon)
+            }
 
             if (itemView is MaterialCardView && card.bgColor != null)
                 itemView.setCardBackgroundColor(Color.parseColor(card.bgColor))
@@ -75,8 +77,11 @@ class ContextualHorizontalRvAdapter(
 
             val layoutParams = itemView.layoutParams
             layoutParams.width = (layoutParams.height * card.backgroundImage.aspectRatio).toInt()
-            Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
-                .into(itemView.iv_scrollable_image)
+
+            card.backgroundImage.imgUrl?.let {
+                Glide.with(itemView.context).load(it)
+                    .into(itemView.iv_scrollable_image)
+            }
         }
     }
 
@@ -97,8 +102,11 @@ class ContextualHorizontalRvAdapter(
             }
             //set width of this card based on the aspect ratio od the image
             layoutParams.width = (layoutParams.height * card.backgroundImage.aspectRatio).toInt()
-            Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
-                .into(itemView.iv_image_dynamic)
+
+            card.backgroundImage.imgUrl?.let {
+                Glide.with(itemView.context).load(it)
+                    .into(itemView.iv_image_dynamic)
+            }
         }
     }
 

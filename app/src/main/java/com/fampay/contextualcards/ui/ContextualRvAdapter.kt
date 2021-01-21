@@ -100,13 +100,17 @@ class ContextualRvAdapter(
                     if (card.formattedDescription != null) {
                         smallDisplayCard.tv_description.text = card.formattedDescription.text
                         smallDisplayCard.tv_description.visibility = View.VISIBLE
-                    } else {
+                    } else
                         smallDisplayCard.tv_description.visibility = View.GONE
+
+
+                    card.icon.imgUrl?.let {
+                        Glide.with(itemView.context).load(it)
+                            .placeholder(R.drawable.default_icon_background)
+                            .error(R.drawable.default_icon_background)
+                            .into(smallDisplayCard.iv_icon)
                     }
-                    Glide.with(itemView.context).load(card.icon.imgUrl)
-                        .placeholder(R.drawable.default_icon_background)
-                        .error(R.drawable.default_icon_background)
-                        .into(smallDisplayCard.iv_icon)
+
                     if (smallDisplayCard is MaterialCardView && card.bgColor != null)
                         smallDisplayCard.setCardBackgroundColor(Color.parseColor(card.bgColor))
 
@@ -166,8 +170,11 @@ class ContextualRvAdapter(
 
                     itemView.ll_card_container.addView(bigDisplayCard)
 
-                    Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
-                        .into(itemView.iv_image)
+                    card.backgroundImage.imgUrl?.let {
+                        Glide.with(itemView.context).load(it)
+                            .into(itemView.iv_image)
+                    }
+
                     bigDisplayCard.tv_big_title.text = card.formattedTitle.text
                     if (card.formattedDescription != null) {
                         bigDisplayCard.tv_big_description.text = card.formattedDescription.text
@@ -178,8 +185,13 @@ class ContextualRvAdapter(
                     if (card.ctaList.isNotEmpty()) {
                         val cta = card.ctaList.first()
                         bigDisplayCard.bt_cta.text = cta.text
-                        bigDisplayCard.bt_cta.setTextColor(Color.parseColor(cta.textColor))
-                        bigDisplayCard.bt_cta.setBackgroundColor(Color.parseColor(cta.backgroundColor))
+
+                        if (cta.textColor != null)
+                            bigDisplayCard.bt_cta.setTextColor(Color.parseColor(cta.textColor))
+
+                        if (cta.backgroundColor != null)
+                            bigDisplayCard.bt_cta.setBackgroundColor(Color.parseColor(cta.backgroundColor))
+
                         bigDisplayCard.bt_cta.visibility = View.VISIBLE
                     } else
                         bigDisplayCard.bt_cta.visibility = View.GONE
@@ -188,13 +200,15 @@ class ContextualRvAdapter(
                     //bigDisplayCard.setCardBackgroundColor(Color.parseColor(card.bgColor))
 
                     bigDisplayCard.bt_cta.setOnClickListener {
-                        actionListener?.invoke(list[adapterPosition].cards.first().ctaList.first().url)
+                        list[adapterPosition].cards.first().ctaList.first().url?.let { url ->
+                            actionListener?.invoke(url)
+                        }
                     }
                     bigDisplayCard.setOnLongClickListener {
                         slideAndRevealView(
                             itemView.view_foreground,
                             itemView.view_background,
-                            list[adapterPosition].cards.first()
+                            card
                         )
                         true
                     }
@@ -204,12 +218,6 @@ class ContextualRvAdapter(
     }
 
     private inner class HC5ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        init {
-            itemView.setOnClickListener {
-                actionListener?.invoke(list[adapterPosition].cards.first().url)
-            }
-        }
 
         fun bind(position: Int) {
             val cardGroup = list[position]
@@ -257,20 +265,20 @@ class ContextualRvAdapter(
 
                     itemView.ll_card_container.addView(imageCard)
 
-                    Glide.with(imageCard.context).load(card.backgroundImage.imgUrl)
-                        .into(imageCard.iv_image)
+                    card.backgroundImage.imgUrl?.let {
+                        Glide.with(imageCard.context).load(it)
+                            .into(imageCard.iv_image)
+                    }
+
+                    imageCard.setOnClickListener {
+                        actionListener?.invoke(card.url)
+                    }
                 }
             }
         }
     }
 
     private inner class HC6ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        init {
-            itemView.setOnClickListener {
-                actionListener?.invoke(list[adapterPosition].cards.first().url)
-            }
-        }
 
         fun bind(position: Int) {
             val cardGroup = list[position]
@@ -325,7 +333,16 @@ class ContextualRvAdapter(
                     } else {
                         arrowCard.tv_description.visibility = View.GONE
                     }
-                    Glide.with(arrowCard.context).load(card.icon.imgUrl).into(arrowCard.iv_icon)
+
+                    card.icon.imgUrl?.let {
+                        Glide.with(arrowCard.context)
+                            .load(it)
+                            .into(arrowCard.iv_icon)
+                    }
+
+                    arrowCard.setOnClickListener {
+                        actionListener?.invoke(card.url)
+                    }
                 }
             }
         }

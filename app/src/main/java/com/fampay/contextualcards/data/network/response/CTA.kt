@@ -8,14 +8,14 @@ data class CTA(
     val text: String,
 
     @SerializedName("bg_color")
-    val backgroundColor: String,
+    val backgroundColor: String?,
 
     @SerializedName("text_color")
-    val textColor: String,
+    val textColor: String?,
 
     @SerializedName("url_choice")
-    val urlChoice: String,
+    val urlChoice: String?,
 
     @SerializedName("url")
-    val url: String,
+    val url: String?,
 )

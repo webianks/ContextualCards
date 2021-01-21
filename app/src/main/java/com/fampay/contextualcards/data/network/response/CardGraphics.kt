@@ -8,7 +8,7 @@ data class CardGraphics(
     val imgType: String,
 
     @SerializedName("image_url")
-    val imgUrl: String,
+    val imgUrl: String?,
 
     @SerializedName("aspect_ratio")
     val aspectRatio: Double,
