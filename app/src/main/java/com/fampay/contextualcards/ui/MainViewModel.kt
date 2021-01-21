@@ -1,4 +1,4 @@
-package com.fampay.contextualcards
+package com.fampay.contextualcards.ui
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
