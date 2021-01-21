@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.fampay.contextualcards.R
 import com.fampay.contextualcards.data.network.response.Card
 import com.fampay.contextualcards.data.network.response.CardGroup
+import com.fampay.contextualcards.util.getIfCardDismissed
 import com.fampay.contextualcards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_scrollable.view.*
@@ -22,8 +23,9 @@ import kotlinx.android.synthetic.main.item_view_image.view.iv_image
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 
 class ContextualRvAdapter(
-    private val context: Context, val list: List<CardGroup>,
-    val actionListener: ((String) -> Unit)? = null
+    private val context: Context, val list: ArrayList<CardGroup>,
+    val actionListener: ((String) -> Unit)? = null,
+    val cardDismissListener: (String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -155,6 +157,10 @@ class ContextualRvAdapter(
 
                 for (card in cardGroup.cards) {
 
+                    //Don't add this card in the layout if it was dismissed before
+                    if(getIfCardDismissed(context,card.name))
+                        return
+
                     val bigDisplayCard = LayoutInflater.from(context).inflate(
                         R.layout.item_view_big_display,
                         itemView.ll_card_container, false
@@ -211,6 +217,22 @@ class ContextualRvAdapter(
                             card
                         )
                         true
+                    }
+
+                    itemView.cv_remind_later.setOnClickListener {
+                        //list.removeAt(adapterPosition)
+                        //notifyItemRemoved(adapterPosition)
+                        itemView.ll_card_container.removeView(bigDisplayCard)
+                    }
+
+                    /**
+                     *  Here using name of the card as unique key because we may have other cards
+                     *  in the group and we dont have id in the schema of card to use it as unique
+                     *  for the same reason we can't use id of the card group also.
+                     */
+                    itemView.cv_dismiss_now.setOnClickListener {
+                        cardDismissListener(card.name)
+                        itemView.ll_card_container.removeView(bigDisplayCard)
                     }
                 }
             }

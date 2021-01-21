@@ -17,7 +17,7 @@ data class CardGroup(
     val cardType: Int,
 
     @SerializedName("cards")
-    val cards: List<Card>,
+    val cards: ArrayList<Card>,
 
     @SerializedName("is_scrollable")
     val isScrollable: Boolean,

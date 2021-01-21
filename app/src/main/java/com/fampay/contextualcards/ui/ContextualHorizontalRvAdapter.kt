@@ -1,7 +1,9 @@
 package com.fampay.contextualcards.ui
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +12,22 @@ import com.bumptech.glide.Glide
 import com.fampay.contextualcards.R
 import com.fampay.contextualcards.data.network.response.Card
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC1
+import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC3
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC5
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC6
 import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC9
 import com.fampay.contextualcards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_dynamic_width.view.*
+import kotlinx.android.synthetic.main.item_view_big_display.view.*
+import kotlinx.android.synthetic.main.item_view_big_display.view.iv_image
+import kotlinx.android.synthetic.main.item_view_image.view.*
 import kotlinx.android.synthetic.main.item_view_scrollable_image.view.*
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 
 class ContextualHorizontalRvAdapter(
     private val context: Context,
-    val list: List<Card>,
+    val list: ArrayList<Card>,
     val type: Int,
     val actionListener: ((String) -> Unit)? = null,
     val hc9Height: Int? = null,
@@ -33,7 +39,6 @@ class ContextualHorizontalRvAdapter(
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
     }
-
 
     private inner class HC1ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -62,6 +67,65 @@ class ContextualHorizontalRvAdapter(
 
             if (itemView is MaterialCardView && card.bgColor != null)
                 itemView.setCardBackgroundColor(Color.parseColor(card.bgColor))
+        }
+    }
+
+    private inner class HC3ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.bt_cta.setOnClickListener {
+                list[adapterPosition].ctaList.first().url?.let { url ->
+                    actionListener?.invoke(url)
+                }
+            }
+            itemView.setOnLongClickListener {
+                slideAndRevealView(
+                    itemView.view_foreground,
+                    itemView.view_background,
+                    list[adapterPosition]
+                )
+                true
+            }
+
+            itemView.cv_remind_later.setOnClickListener {
+                list.removeAt(adapterPosition)
+                notifyItemRemoved(adapterPosition)
+            }
+
+            itemView.cv_dismiss_now.setOnClickListener {
+
+            }
+        }
+
+        fun bind(position: Int) {
+            val card = list[position]
+
+
+            card.backgroundImage.imgUrl?.let {
+                Glide.with(itemView.context).load(it)
+                    .into(itemView.iv_image)
+            }
+
+            itemView.tv_big_title.text = card.formattedTitle.text
+            if (card.formattedDescription != null) {
+                itemView.tv_big_description.text = card.formattedDescription.text
+                itemView.tv_big_description.visibility = View.VISIBLE
+            } else
+                itemView.tv_big_description.visibility = View.GONE
+
+            if (card.ctaList.isNotEmpty()) {
+                val cta = card.ctaList.first()
+                itemView.bt_cta.text = cta.text
+
+                if (cta.textColor != null)
+                    itemView.bt_cta.setTextColor(Color.parseColor(cta.textColor))
+
+                if (cta.backgroundColor != null)
+                    itemView.bt_cta.setBackgroundColor(Color.parseColor(cta.backgroundColor))
+
+                itemView.bt_cta.visibility = View.VISIBLE
+            } else
+                itemView.bt_cta.visibility = View.GONE
         }
     }
 
@@ -146,6 +210,12 @@ class ContextualHorizontalRvAdapter(
                         .inflate(R.layout.item_view_small_display, parent, false)
                 )
             }
+            HC3 -> {
+                HC5ViewHolder(
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.item_view_big_display, parent, false)
+                )
+            }
             HC5 -> {
                 HC5ViewHolder(
                     LayoutInflater.from(context)
@@ -186,12 +256,39 @@ class ContextualHorizontalRvAdapter(
             HC6 -> {
                 (holder as HC6ViewHolder).bind(position)
             }
+            HC3 -> {
+                (holder as HC3ViewHolder).bind(position)
+            }
             HC1 -> {
                 (holder as HC1ViewHolder).bind(position)
             }
             else -> {
                 (holder as HC9ViewHolder).bind(position)
             }
+        }
+    }
+
+    /**
+     * Animate the foreground view by revealing the background view with actions
+     * and also vibrate at the same time
+     */
+    fun slideAndRevealView(foreground: View, background: View, card: Card) {
+        if (card.isOpen) {
+            val animation = ObjectAnimator.ofFloat(foreground, "translationX", 0f)
+            animation.duration = 100
+            background.view_background.visibility = View.GONE
+            animation.start()
+            val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+            v!!.vibrate(50)
+            card.isOpen = false
+        } else {
+            val animation = ObjectAnimator.ofFloat(foreground, "translationX", 450f)
+            animation.duration = 100
+            background.view_background.visibility = View.VISIBLE
+            animation.start()
+            val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+            v!!.vibrate(50)
+            card.isOpen = true
         }
     }
 }

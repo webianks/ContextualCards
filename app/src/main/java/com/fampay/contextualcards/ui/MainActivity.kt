@@ -50,9 +50,14 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
                     rv_main.layoutManager = LinearLayoutManager(this)
                     rv_main.adapter =
-                        ContextualRvAdapter(this, cardGroupResponse.cardGroups) { url ->
-                            openUrl(this, url)
-                        }
+                        ContextualRvAdapter(this, cardGroupResponse.cardGroups,
+                            { url ->
+                                openUrl(this, url)
+                            },
+                            { which ->
+                                //Card dismissed listener
+                                setCardDismissed(this,which)
+                            })
                 }
 
                 Failed -> {
