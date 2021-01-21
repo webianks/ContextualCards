@@ -2,11 +2,14 @@ package com.fampay.contextualcards.ui
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fampay.contextualcards.BuildConfig
+import com.fampay.contextualcards.ContextualApplication
 import com.fampay.contextualcards.R
+import com.fampay.contextualcards.ServiceLocator
 import com.fampay.contextualcards.data.network.Networking
 import com.fampay.contextualcards.data.network.response.CardGroupResponse
 import com.fampay.contextualcards.util.*
@@ -25,16 +28,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainViewModel = ViewModelProvider(this, ViewModelProviderFactory(MainViewModel::class) {
-            MainViewModel(
-                CompositeDisposable(), Networking.create(
-                    BuildConfig.BASE_URL,
-                    application.cacheDir,
-                    5 * 1024 * 1024
-                )
-            )
-        }).get(MainViewModel::class.java)
-
+        mainViewModel = ServiceLocator.getMainViewModel(this)
         mainViewModel.getCardGroups()
 
         addObservers()
@@ -45,9 +39,11 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.cardGroupUiState.observe(this) {
             when (it) {
                 Loading -> {
-
+                    main_progress.visibility = View.VISIBLE
                 }
                 is Success<*> -> {
+                    main_progress.visibility = View.GONE
+
                     val cardGroupResponse = it.data as CardGroupResponse
 
                     Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
@@ -58,10 +54,10 @@ class MainActivity : AppCompatActivity() {
                         }
                 }
                 Failed -> {
-
+                    main_progress.visibility = View.GONE
                 }
                 else -> {
-
+                    main_progress.visibility = View.GONE
                 }
             }
         }
