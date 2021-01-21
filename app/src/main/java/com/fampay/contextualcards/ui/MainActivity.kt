@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.fampay.contextualcards.BuildConfig
 import com.fampay.contextualcards.R
 import com.fampay.contextualcards.data.network.Networking
-import com.fampay.contextualcards.util.ViewModelProviderFactory
-import com.fampay.contextualcards.util.openUrl
+import com.fampay.contextualcards.data.network.response.CardGroupResponse
+import com.fampay.contextualcards.util.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -19,27 +19,50 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "MainActivity"
     }
 
+    private lateinit var mainViewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val mainViewModel = ViewModelProvider(this, ViewModelProviderFactory(MainViewModel::class) {
+        mainViewModel = ViewModelProvider(this, ViewModelProviderFactory(MainViewModel::class) {
             MainViewModel(
-                    CompositeDisposable(), Networking.create(
+                CompositeDisposable(), Networking.create(
                     BuildConfig.BASE_URL,
                     application.cacheDir,
                     5 * 1024 * 1024
-            )
+                )
             )
         }).get(MainViewModel::class.java)
 
         mainViewModel.getCardGroups()
 
-        mainViewModel.cardGroupResponseData.observe(this) {
-            Log.i(TAG, "CardGroupResponse count ${it.cardGroups.size}")
-            rv_main.layoutManager = LinearLayoutManager(this)
-            rv_main.adapter = MainRecyclerViewAdapter(this, it.cardGroups){ url ->
-                openUrl(this, url)
+        addObservers()
+    }
+
+
+    private fun addObservers() {
+        mainViewModel.cardGroupUiState.observe(this) {
+            when (it) {
+                Loading -> {
+
+                }
+                is Success<*> -> {
+                    val cardGroupResponse = it.data as CardGroupResponse
+
+                    Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
+                    rv_main.layoutManager = LinearLayoutManager(this)
+                    rv_main.adapter =
+                        MainRecyclerViewAdapter(this, cardGroupResponse.cardGroups) { url ->
+                            openUrl(this, url)
+                        }
+                }
+                Failed -> {
+
+                }
+                else -> {
+
+                }
             }
         }
     }
