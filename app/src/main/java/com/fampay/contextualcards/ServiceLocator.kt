@@ -1,18 +1,29 @@
 package com.fampay.contextualcards
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.fampay.contextualcards.ui.MainViewModel
+import com.fampay.contextualcards.contextual_cards.ContextualContainerViewModel
 import com.fampay.contextualcards.util.ViewModelProviderFactory
 import io.reactivex.disposables.CompositeDisposable
 
 object ServiceLocator {
 
-    fun getMainViewModel(activity: AppCompatActivity): MainViewModel {
-        return ViewModelProvider(activity, ViewModelProviderFactory(MainViewModel::class) {
-            MainViewModel(
-                CompositeDisposable(),  (activity.application as ContextualApplication).getNetworkService()
+    fun getContextualCardsViewModel(activity: AppCompatActivity): ContextualContainerViewModel {
+        return ViewModelProvider(activity, ViewModelProviderFactory(ContextualContainerViewModel::class) {
+            ContextualContainerViewModel(
+                CompositeDisposable(),
+                (activity.application as ContextualApplication).getNetworkService()
             )
-        }).get(MainViewModel::class.java)
+        }).get(ContextualContainerViewModel::class.java)
+    }
+
+    fun getContextualCardsViewModel(fragment: Fragment): ContextualContainerViewModel {
+        return ViewModelProvider(fragment, ViewModelProviderFactory(ContextualContainerViewModel::class) {
+            ContextualContainerViewModel(
+                CompositeDisposable(),
+                (fragment.activity?.application as ContextualApplication).getNetworkService()
+            )
+        }).get(ContextualContainerViewModel::class.java)
     }
 }

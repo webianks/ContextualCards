@@ -13,63 +13,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val TAG = "MainActivity"
-    }
-
-    private lateinit var mainViewModel: MainViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainViewModel = ServiceLocator.getMainViewModel(this)
-        mainViewModel.getCardGroups()
+        contextual_cards.onCreate(this)
 
+        /*
         swipe_refresh.setOnRefreshListener {
             mainViewModel.getCardGroups(refreshing = true)
         }
+         */
 
-        addObservers()
     }
-
-
-    private fun addObservers() {
-        mainViewModel.cardGroupUiState.observe(this) {
-            when (it) {
-                Loading -> {
-                    main_progress.visibility = View.VISIBLE
-                }
-
-                is Success<*> -> {
-                    main_progress.visibility = View.GONE
-                    swipe_refresh.isRefreshing = false
-
-                    val cardGroupResponse = it.data as CardGroupResponse
-
-                    Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
-                    rv_main.layoutManager = LinearLayoutManager(this)
-                    rv_main.adapter =
-                        ContextualRvAdapter(this, cardGroupResponse.cardGroups,
-                            { url ->
-                                openUrl(this, url)
-                            },
-                            { which ->
-                                //Card dismissed listener
-                                setCardDismissed(this,which)
-                            })
-                }
-
-                Failed -> {
-                    main_progress.visibility = View.GONE
-                    swipe_refresh.isRefreshing = false
-                }
-                else -> {
-                    main_progress.visibility = View.GONE
-                    swipe_refresh.isRefreshing = false
-                }
-            }
-        }
-    }
-
 }

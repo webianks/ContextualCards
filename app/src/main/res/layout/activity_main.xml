@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,37 +9,14 @@
         android:id="@+id/toolbar"
         layout="@layout/layout_fam_pay_header" />
 
-    <FrameLayout
+    <com.fampay.contextualcards.contextual_cards.ContextualCardsContainer
+        android:id="@+id/contextual_cards"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <ProgressBar
-            android:id="@+id/main_progress"
-            android:layout_width="@dimen/margin_32dp"
-            android:layout_height="@dimen/margin_32dp"
-            android:layout_gravity="center"
-            />
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
