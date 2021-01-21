@@ -9,4 +9,5 @@
     <dimen name="radius_cta_default">6dp</dimen>
     <dimen name="size_title_big_display">32sp</dimen>
     <dimen name="margin_170dp">170dp</dimen>
+    <dimen name="margin_22dp">22dp</dimen>
 </resources>
