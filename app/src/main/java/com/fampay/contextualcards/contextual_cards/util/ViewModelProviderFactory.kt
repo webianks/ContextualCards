@@ -3,6 +3,7 @@ package com.fampay.contextualcards.contextual_cards.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.fampay.contextualcards.contextual_cards.ContextualContainerViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -18,7 +19,7 @@ import kotlin.reflect.KClass
 
 class ViewModelProviderFactory<T : ViewModel>(
     private val kClass: KClass<T>, // KClass is the holder of class of type ViewModel that needs to be inject
-    private val creator: () -> T // This is the Lambda function, this is provided be the ActivityModule/FragmentModule,
+    private val creator: () -> ContextualContainerViewModel? // This is the Lambda function, this is provided be the ActivityModule/FragmentModule,
     // when creator lambda is called then that module creates and return the instance of ViewModel
 ) : ViewModelProvider.NewInstanceFactory() {
 

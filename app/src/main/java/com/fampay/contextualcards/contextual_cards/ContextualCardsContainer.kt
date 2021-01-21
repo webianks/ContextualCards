@@ -41,17 +41,18 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
         LayoutInflater.from(getContext()).inflate(R.layout.content_contextual_cards, this, true)
     }
 
-    fun onCreate(activity: AppCompatActivity) {
-        activity.lifecycle.addObserver(this)
+    fun init(activity: AppCompatActivity) {
         mainViewModel = ContextualServiceLocator.getContextualCardsViewModel(activity)
         this.mActivity = activity
         initViews()
+        activity.lifecycle.addObserver(this)
     }
 
-    fun onCreate(fragment: Fragment) {
-        fragment.lifecycle.addObserver(this)
+    fun init(fragment: Fragment) {
         mainViewModel = ContextualServiceLocator.getContextualCardsViewModel(fragment)
         this.mFragment = fragment
+        initViews()
+        fragment.lifecycle.addObserver(this)
     }
 
     private fun initViews() {
@@ -61,63 +62,101 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
         swipeRefresh.setOnRefreshListener {
             mainViewModel?.getCardGroups(refreshing = true)
         }
+        addObservers()
     }
 
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private fun onCreate() {
-        addObservers()
         mainViewModel?.getCardGroups()
+        Log.d(TAG,"onCreate")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun onResume() {
-
+        Log.d(TAG,"onPause")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     private fun onPause() {
-
+        Log.d(TAG,"onPause")
     }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private fun onDestroy() {
+        this.mActivity = null
+        this.mFragment = null
+    }
+
 
     private fun addObservers() {
 
-        mActivity?.let { activity ->
-            mainViewModel?.cardGroupUiState?.observe(activity) {
-                when (it) {
-                    Loading -> {
-                        progressBar.visibility = View.VISIBLE
+        if (mActivity != null) {
+            mActivity?.let { activity ->
+                mainViewModel?.cardGroupUiState?.observe(activity) {
+                    when (it) {
+                        Loading -> {
+                            progressBar.visibility = View.VISIBLE
+                        }
+
+                        is Success<*> -> {
+                            setSuccessBehaviour(it)
+                        }
+
+                        Failed -> {
+                           failedStateBehaviour()
+                        }
+                        else -> {
+                            failedStateBehaviour()
+                        }
                     }
+                }
+            }
+        } else {
+            mFragment?.let { fragment ->
+                mainViewModel?.cardGroupUiState?.observe(fragment) {
+                    when (it) {
+                        Loading -> {
+                            progressBar.visibility = View.VISIBLE
+                        }
 
-                    is Success<*> -> {
-                        progressBar.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
+                        is Success<*> -> {
+                            setSuccessBehaviour(it)
+                        }
 
-                        val cardGroupResponse = it.data as CardGroupResponse
-
-                        Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
-                        recyclerView.layoutManager = LinearLayoutManager(context)
-                        recyclerView.adapter =
-                            ContextualRvAdapter(context, cardGroupResponse.cardGroups,
-                                { url ->
-                                    openUrl(context, url)
-                                },
-                                { which ->
-                                    //Card dismissed listener
-                                    setCardDismissed(context, which)
-                                })
-                    }
-
-                    Failed -> {
-                        progressBar.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
-                    }
-                    else -> {
-                        progressBar.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
+                        Failed -> {
+                            failedStateBehaviour()
+                        }
+                        else -> {
+                            failedStateBehaviour()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun failedStateBehaviour() {
+        progressBar.visibility = View.GONE
+        swipeRefresh.isRefreshing = false
+    }
+
+    private fun setSuccessBehaviour(uiState: Success<*>) {
+
+        progressBar.visibility = View.GONE
+        swipeRefresh.isRefreshing = false
+
+        val cardGroupResponse = uiState.data as CardGroupResponse
+
+        Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = ContextualRvAdapter(context, cardGroupResponse.cardGroups,
+                { url ->
+                    openUrl(context, url)
+                },
+                { which ->
+                    //Card dismissed listener
+                    setCardDismissed(context, which)
+            })
     }
 }
