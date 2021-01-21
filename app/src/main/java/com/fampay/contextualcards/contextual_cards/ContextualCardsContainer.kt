@@ -2,28 +2,39 @@ package com.fampay.contextualcards.contextual_cards
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.fampay.contextualcards.R
-import com.fampay.contextualcards.ServiceLocator
-import com.fampay.contextualcards.util.*
+import com.fampay.contextualcards.contextual_cards.data.network.response.CardGroupResponse
+import com.fampay.contextualcards.contextual_cards.util.*
+import kotlinx.android.synthetic.main.content_contextual_cards.view.*
 
 class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayout(context, atts),
     LifecycleObserver {
 
     companion object {
-        const val TAG = "ContextualCardsContainer"
+        const val TAG = "ContextualContainer"
     }
 
     private var mainViewModel: ContextualContainerViewModel? = null
     private var mActivity: AppCompatActivity? = null
     private var mFragment: Fragment? = null
+
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
     init {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey))
@@ -32,15 +43,26 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
 
     fun onCreate(activity: AppCompatActivity) {
         activity.lifecycle.addObserver(this)
-        mainViewModel = ServiceLocator.getContextualCardsViewModel(activity)
+        mainViewModel = ContextualServiceLocator.getContextualCardsViewModel(activity)
         this.mActivity = activity
+        initViews()
     }
 
     fun onCreate(fragment: Fragment) {
         fragment.lifecycle.addObserver(this)
-        mainViewModel = ServiceLocator.getContextualCardsViewModel(fragment)
+        mainViewModel = ContextualServiceLocator.getContextualCardsViewModel(fragment)
         this.mFragment = fragment
     }
+
+    private fun initViews() {
+        swipeRefresh = swipe_refresh_contextual
+        recyclerView = recycler_view_contextual
+        progressBar = progress_contextual
+        swipeRefresh.setOnRefreshListener {
+            mainViewModel?.getCardGroups(refreshing = true)
+        }
+    }
+
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private fun onCreate() {
@@ -64,34 +86,35 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
             mainViewModel?.cardGroupUiState?.observe(activity) {
                 when (it) {
                     Loading -> {
-                        //main_progress.visibility = View.VISIBLE
+                        progressBar.visibility = View.VISIBLE
                     }
 
                     is Success<*> -> {
-                        /*main_progress.visibility = View.GONE
-                        swipe_refresh.isRefreshing = false
+                        progressBar.visibility = View.GONE
+                        swipeRefresh.isRefreshing = false
 
                         val cardGroupResponse = it.data as CardGroupResponse
 
                         Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
-                        rv_main.layoutManager = LinearLayoutManager(this)
-                        rv_main.adapter = ContextualRvAdapter(this, cardGroupResponse.cardGroups,
+                        recyclerView.layoutManager = LinearLayoutManager(context)
+                        recyclerView.adapter =
+                            ContextualRvAdapter(context, cardGroupResponse.cardGroups,
                                 { url ->
-                                    openUrl(this, url)
+                                    openUrl(context, url)
                                 },
                                 { which ->
                                     //Card dismissed listener
-                                    setCardDismissed(this, which)
-                                })*/
+                                    setCardDismissed(context, which)
+                                })
                     }
 
                     Failed -> {
-                        //main_progress.visibility = View.GONE
-                        //swipe_refresh.isRefreshing = false
+                        progressBar.visibility = View.GONE
+                        swipeRefresh.isRefreshing = false
                     }
                     else -> {
-                        //main_progress.visibility = View.GONE
-                        //swipe_refresh.isRefreshing = false
+                        progressBar.visibility = View.GONE
+                        swipeRefresh.isRefreshing = false
                     }
                 }
             }

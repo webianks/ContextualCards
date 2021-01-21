@@ -1,4 +1,4 @@
-package com.fampay.contextualcards.ui
+package com.fampay.contextualcards.contextual_cards
 
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -10,18 +10,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.fampay.contextualcards.R
-import com.fampay.contextualcards.data.network.response.Card
-import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC1
-import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC3
-import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC5
-import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC6
-import com.fampay.contextualcards.ui.ContextualRvAdapter.Companion.HC9
-import com.fampay.contextualcards.util.px
+import com.fampay.contextualcards.contextual_cards.data.network.response.Card
+import com.fampay.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC1
+import com.fampay.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC3
+import com.fampay.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC5
+import com.fampay.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC6
+import com.fampay.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC9
+import com.fampay.contextualcards.contextual_cards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_dynamic_width.view.*
 import kotlinx.android.synthetic.main.item_view_big_display.view.*
 import kotlinx.android.synthetic.main.item_view_big_display.view.iv_image
-import kotlinx.android.synthetic.main.item_view_image.view.*
 import kotlinx.android.synthetic.main.item_view_scrollable_image.view.*
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 

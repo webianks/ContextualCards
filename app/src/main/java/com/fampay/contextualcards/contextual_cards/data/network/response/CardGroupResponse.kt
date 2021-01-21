@@ -1,4 +1,4 @@
-package com.fampay.contextualcards.data.network.response
+package com.fampay.contextualcards.contextual_cards.data.network.response
 
 import com.google.gson.annotations.SerializedName
 

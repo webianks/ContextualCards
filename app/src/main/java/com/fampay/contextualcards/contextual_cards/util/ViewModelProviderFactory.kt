@@ -1,4 +1,4 @@
-package com.fampay.contextualcards.util
+package com.fampay.contextualcards.contextual_cards.util
 
 
 import androidx.lifecycle.ViewModel

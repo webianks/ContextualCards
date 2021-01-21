@@ -1,6 +1,6 @@
-package com.fampay.contextualcards.data.network
+package com.fampay.contextualcards.contextual_cards.data.network
 
-import com.fampay.contextualcards.data.network.response.CardGroupResponse
+import com.fampay.contextualcards.contextual_cards.data.network.response.CardGroupResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 

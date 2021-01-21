@@ -1,4 +1,4 @@
-package com.fampay.contextualcards.data.network
+package com.fampay.contextualcards.contextual_cards.data.network
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.fampay.contextualcards.BuildConfig

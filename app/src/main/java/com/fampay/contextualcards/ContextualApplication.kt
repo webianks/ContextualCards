@@ -1,8 +1,8 @@
 package com.fampay.contextualcards
 
 import android.app.Application
-import com.fampay.contextualcards.data.network.NetworkService
-import com.fampay.contextualcards.data.network.Networking
+import com.fampay.contextualcards.contextual_cards.data.network.NetworkService
+import com.fampay.contextualcards.contextual_cards.data.network.Networking
 
 class ContextualApplication : Application() {
 

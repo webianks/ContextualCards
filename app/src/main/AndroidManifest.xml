@@ -14,7 +14,7 @@
         android:name=".ContextualApplication"
         android:theme="@style/Theme.ContextualCards">
 
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".demo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

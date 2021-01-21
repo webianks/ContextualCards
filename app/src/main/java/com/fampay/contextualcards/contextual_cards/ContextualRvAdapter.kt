@@ -1,4 +1,4 @@
-package com.fampay.contextualcards.ui
+package com.fampay.contextualcards.contextual_cards
 
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.fampay.contextualcards.R
-import com.fampay.contextualcards.data.network.response.Card
-import com.fampay.contextualcards.data.network.response.CardGroup
-import com.fampay.contextualcards.util.getIfCardDismissed
-import com.fampay.contextualcards.util.px
+import com.fampay.contextualcards.contextual_cards.data.network.response.Card
+import com.fampay.contextualcards.contextual_cards.data.network.response.CardGroup
+import com.fampay.contextualcards.contextual_cards.util.getIfCardDismissed
+import com.fampay.contextualcards.contextual_cards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_scrollable.view.*
 import kotlinx.android.synthetic.main.item_view_big_display.view.*
