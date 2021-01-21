@@ -3,20 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_main"
     android:layout_width="wrap_content"
-    android:layout_height="120dp"
-    android:layout_margin="@dimen/margin_4dp"
+    android:layout_height="140dp"
+    android:layout_margin="@dimen/margin_8dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="@dimen/radius_card_view_default"
     app:cardElevation="0dp">
 
     <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/iv_image_dynamic"
-            android:layout_width="wrap_content"
+            android:id="@+id/iv_scrollable_image"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
 
     </FrameLayout>
 

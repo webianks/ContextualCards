@@ -3,19 +3,12 @@ package com.fampay.contextualcards.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.fampay.contextualcards.BuildConfig
-import com.fampay.contextualcards.ContextualApplication
 import com.fampay.contextualcards.R
 import com.fampay.contextualcards.ServiceLocator
-import com.fampay.contextualcards.data.network.Networking
 import com.fampay.contextualcards.data.network.response.CardGroupResponse
 import com.fampay.contextualcards.util.*
-import com.google.android.material.snackbar.Snackbar
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -57,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
                     rv_main.layoutManager = LinearLayoutManager(this)
                     rv_main.adapter =
-                        MainRecyclerViewAdapter(this, cardGroupResponse.cardGroups) { url ->
+                        ContextualRvAdapter(this, cardGroupResponse.cardGroups) { url ->
                             openUrl(this, url)
                         }
                 }

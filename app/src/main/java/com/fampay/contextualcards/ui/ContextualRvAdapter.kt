@@ -3,8 +3,6 @@ package com.fampay.contextualcards.ui
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
-import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +21,7 @@ import kotlinx.android.synthetic.main.item_view_big_display.view.*
 import kotlinx.android.synthetic.main.item_view_image.view.iv_image
 import kotlinx.android.synthetic.main.item_view_small_display.view.*
 
-class MainRecyclerViewAdapter(
+class ContextualRvAdapter(
     private val context: Context, val list: List<CardGroup>,
     val actionListener: ((String) -> Unit)? = null
 ) :
@@ -57,7 +55,7 @@ class MainRecyclerViewAdapter(
 
             if (cardGroup.isScrollable) {
 
-                itemView.recyclerView.adapter = HorizontalRecyclerViewAdapter(
+                itemView.recyclerView.adapter = ContextualHorizontalRvAdapter(
                     context,
                     cardGroup.cards,
                     HC1,
@@ -122,47 +120,86 @@ class MainRecyclerViewAdapter(
 
     private inner class HC3ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        init {
-            itemView.bt_cta.setOnClickListener {
-                actionListener?.invoke(list[adapterPosition].cards.first().ctaList.first().url)
-            }
-
-            itemView.setOnLongClickListener {
-                slideAndRevealView(
-                    itemView.view_foreground,
-                    itemView.view_background,
-                    list[adapterPosition].cards.first()
-                )
-                true
-            }
-        }
-
         fun bind(position: Int) {
+
             val cardGroup = list[position]
-            val card = cardGroup.cards.first()
 
-            Glide.with(itemView.context).load(card.backgroundImage.imgUrl).into(itemView.iv_image)
+            if (cardGroup.isScrollable) {
+                itemView.recyclerView.adapter = ContextualHorizontalRvAdapter(
+                    context,
+                    cardGroup.cards,
+                    HC3,
+                    actionListener
+                )
+                itemView.recyclerView.layoutManager = LinearLayoutManager(
+                    context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+                itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.visibility = View.VISIBLE
+                itemView.ll_card_container.visibility = View.GONE
 
-            itemView.tv_big_title.text = card.formattedTitle.text
+            } else {
+                //Add all the big cards with equal widths
 
-            if (card.formattedDescription != null) {
-                itemView.tv_big_description.text = card.formattedDescription.text
-                itemView.tv_big_description.visibility = View.VISIBLE
-            } else
-                itemView.tv_big_description.visibility = View.GONE
+                itemView.recyclerView.visibility = View.GONE
+                itemView.ll_card_container.visibility = View.VISIBLE
+                val weightSum = cardGroup.cards.size
+                itemView.ll_card_container.weightSum = weightSum.toFloat()
+                itemView.ll_card_container.removeAllViews()
 
-            if (card.ctaList.isNotEmpty()) {
-                val cta = card.ctaList.first()
-                itemView.bt_cta.text = cta.text
-                itemView.bt_cta.setTextColor(Color.parseColor(cta.textColor))
-                itemView.bt_cta.setBackgroundColor(Color.parseColor(cta.backgroundColor))
-                itemView.bt_cta.visibility = View.VISIBLE
-            } else
-                itemView.bt_cta.visibility = View.GONE
+                for (card in cardGroup.cards) {
 
-            //if (itemView is MaterialCardView && card.bgColor != null)
-            //itemView.setCardBackgroundColor(Color.parseColor(card.bgColor))
+                    val bigDisplayCard = LayoutInflater.from(context).inflate(
+                        R.layout.item_view_big_display,
+                        itemView.ll_card_container, false
+                    )
 
+                    val layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams.setMargins(8.px, 8.px, 8.px, 8.px)
+                    layoutParams.weight = 1.0f
+                    bigDisplayCard.layoutParams = layoutParams
+
+                    itemView.ll_card_container.addView(bigDisplayCard)
+
+                    Glide.with(itemView.context).load(card.backgroundImage.imgUrl)
+                        .into(itemView.iv_image)
+                    bigDisplayCard.tv_big_title.text = card.formattedTitle.text
+                    if (card.formattedDescription != null) {
+                        bigDisplayCard.tv_big_description.text = card.formattedDescription.text
+                        bigDisplayCard.tv_big_description.visibility = View.VISIBLE
+                    } else
+                        bigDisplayCard.tv_big_description.visibility = View.GONE
+
+                    if (card.ctaList.isNotEmpty()) {
+                        val cta = card.ctaList.first()
+                        bigDisplayCard.bt_cta.text = cta.text
+                        bigDisplayCard.bt_cta.setTextColor(Color.parseColor(cta.textColor))
+                        bigDisplayCard.bt_cta.setBackgroundColor(Color.parseColor(cta.backgroundColor))
+                        bigDisplayCard.bt_cta.visibility = View.VISIBLE
+                    } else
+                        bigDisplayCard.bt_cta.visibility = View.GONE
+
+                    //if (bigDisplayCard is MaterialCardView && card.bgColor != null)
+                    //bigDisplayCard.setCardBackgroundColor(Color.parseColor(card.bgColor))
+
+                    bigDisplayCard.bt_cta.setOnClickListener {
+                        actionListener?.invoke(list[adapterPosition].cards.first().ctaList.first().url)
+                    }
+                    bigDisplayCard.setOnLongClickListener {
+                        slideAndRevealView(
+                            itemView.view_foreground,
+                            itemView.view_background,
+                            list[adapterPosition].cards.first()
+                        )
+                        true
+                    }
+                }
+            }
         }
     }
 
@@ -176,8 +213,54 @@ class MainRecyclerViewAdapter(
 
         fun bind(position: Int) {
             val cardGroup = list[position]
-            val card = cardGroup.cards.first()
-            Glide.with(itemView.context).load(card.backgroundImage.imgUrl).into(itemView.iv_image)
+
+            if (cardGroup.isScrollable) {
+                itemView.recyclerView.adapter = ContextualHorizontalRvAdapter(
+                    context,
+                    cardGroup.cards,
+                    HC5,
+                    actionListener
+                )
+                itemView.recyclerView.layoutManager = LinearLayoutManager(
+                    context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+                itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.visibility = View.VISIBLE
+                itemView.ll_card_container.visibility = View.GONE
+
+            } else {
+
+                //Add all the image cards with equal widths
+
+                itemView.recyclerView.visibility = View.GONE
+                itemView.ll_card_container.visibility = View.VISIBLE
+                val weightSum = cardGroup.cards.size
+                itemView.ll_card_container.weightSum = weightSum.toFloat()
+                itemView.ll_card_container.removeAllViews()
+
+                for (card in cardGroup.cards) {
+
+                    val imageCard = LayoutInflater.from(context).inflate(
+                        R.layout.item_view_image,
+                        itemView.ll_card_container, false
+                    )
+
+                    val layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams.setMargins(8.px, 8.px, 8.px, 8.px)
+                    layoutParams.weight = 1.0f
+                    imageCard.layoutParams = layoutParams
+
+                    itemView.ll_card_container.addView(imageCard)
+
+                    Glide.with(imageCard.context).load(card.backgroundImage.imgUrl)
+                        .into(imageCard.iv_image)
+                }
+            }
         }
     }
 
@@ -191,16 +274,60 @@ class MainRecyclerViewAdapter(
 
         fun bind(position: Int) {
             val cardGroup = list[position]
-            val card = cardGroup.cards.first()
-            itemView.tv_title.text = card.formattedTitle.text
 
-            if (card.formattedDescription != null) {
-                itemView.tv_description.text = card.formattedDescription.text
-                itemView.tv_description.visibility = View.VISIBLE
+            if (cardGroup.isScrollable) {
+                itemView.recyclerView.adapter = ContextualHorizontalRvAdapter(
+                    context,
+                    cardGroup.cards,
+                    HC5,
+                    actionListener
+                )
+                itemView.recyclerView.layoutManager = LinearLayoutManager(
+                    context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+                itemView.recyclerView.setHasFixedSize(true)
+                itemView.recyclerView.visibility = View.VISIBLE
+                itemView.ll_card_container.visibility = View.GONE
+
             } else {
-                itemView.tv_description.visibility = View.GONE
+                //Add all the arrow cards with equal widths
+
+                itemView.recyclerView.visibility = View.GONE
+                itemView.ll_card_container.visibility = View.VISIBLE
+                val weightSum = cardGroup.cards.size
+                itemView.ll_card_container.weightSum = weightSum.toFloat()
+                itemView.ll_card_container.removeAllViews()
+
+                for (card in cardGroup.cards) {
+
+                    val arrowCard = LayoutInflater.from(context).inflate(
+                        R.layout.item_view_small_display_arrow,
+                        itemView.ll_card_container, false
+                    )
+
+                    val layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams.setMargins(8.px, 8.px, 8.px, 8.px)
+                    layoutParams.weight = 1.0f
+                    arrowCard.layoutParams = layoutParams
+
+                    itemView.ll_card_container.addView(arrowCard)
+
+                    arrowCard.tv_title.text = card.formattedTitle.text
+
+                    if (card.formattedDescription != null) {
+                        arrowCard.tv_description.text = card.formattedDescription.text
+                        arrowCard.tv_description.visibility = View.VISIBLE
+                    } else {
+                        arrowCard.tv_description.visibility = View.GONE
+                    }
+                    Glide.with(arrowCard.context).load(card.icon.imgUrl).into(arrowCard.iv_icon)
+                }
             }
-            Glide.with(itemView.context).load(card.icon.imgUrl).into(itemView.iv_icon)
         }
     }
 
@@ -214,7 +341,7 @@ class MainRecyclerViewAdapter(
 
         fun bind(position: Int) {
             val cardGroup = list[position]
-            itemView.recyclerView.adapter = HorizontalRecyclerViewAdapter(
+            itemView.recyclerView.adapter = ContextualHorizontalRvAdapter(
                 context,
                 cardGroup.cards,
                 HC9,
@@ -243,7 +370,7 @@ class MainRecyclerViewAdapter(
             HC3 -> {
                 return HC3ViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_view_big_display,
+                        R.layout.item_scrollable,
                         parent,
                         false
                     )
@@ -252,7 +379,7 @@ class MainRecyclerViewAdapter(
             HC5 -> {
                 return HC5ViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_view_image,
+                        R.layout.item_scrollable,
                         parent,
                         false
                     )
@@ -261,7 +388,7 @@ class MainRecyclerViewAdapter(
             HC6 -> {
                 return HC6ViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_view_small_display_arrow,
+                        R.layout.item_scrollable,
                         parent,
                         false
                     )
