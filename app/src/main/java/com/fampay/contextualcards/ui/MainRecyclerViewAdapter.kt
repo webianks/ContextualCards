@@ -134,6 +134,24 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
         }
     }
 
+    private inner class HC9ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        fun bind(position: Int) {
+            val cardGroup = list[position]
+            itemView.recyclerView.adapter = HorizontalRecyclerViewAdapter(
+                context,
+                cardGroup.cards,
+                HC9
+            )
+            itemView.recyclerView.layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            itemView.recyclerView.setHasFixedSize(true)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             HC1 -> {
@@ -173,9 +191,9 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
                 )
             }
             HC9 -> {
-                return DummyViewHolder(
+                return HC9ViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_dummy,
+                        R.layout.item_scrollable,
                         parent,
                         false
                     )
@@ -212,7 +230,7 @@ class MainRecyclerViewAdapter(private val context: Context, val list: List<CardG
                 (holder as HC6ViewHolder).bind(position)
             }
             HC9 -> {
-                (holder as DummyViewHolder).bind(position)
+                (holder as HC9ViewHolder).bind(position)
             }
         }
     }
