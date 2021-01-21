@@ -497,15 +497,17 @@ class ContextualRvAdapter(
         if (card.isOpen) {
             val animation = ObjectAnimator.ofFloat(foreground, "translationX", 0f)
             animation.duration = 100
-            background.view_background.visibility = View.GONE
+            background.visibility = View.GONE
             animation.start()
             val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
             v!!.vibrate(50)
             card.isOpen = false
         } else {
-            val animation = ObjectAnimator.ofFloat(foreground, "translationX", 450f)
+            background.visibility = View.VISIBLE
+
+            //TODO remove this hadcoded value
+            val animation = ObjectAnimator.ofFloat(foreground, "translationX", 180.px.toFloat())
             animation.duration = 100
-            background.view_background.visibility = View.VISIBLE
             animation.start()
             val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
             v!!.vibrate(50)
