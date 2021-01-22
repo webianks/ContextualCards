@@ -69,8 +69,6 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
-                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
-                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -94,7 +92,7 @@ class ContextualRvAdapter(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
-                    layoutParams.setMargins(8.px, 8.px, 8.px, 8.px)
+                    layoutParams.setMargins(8.px, 4.px, 4.px, 8.px)
                     layoutParams.weight = 1.0f
                     smallDisplayCard.layoutParams = layoutParams
 
@@ -146,8 +144,6 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
-                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
-                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -163,7 +159,7 @@ class ContextualRvAdapter(
                 for (card in cardGroup.cards) {
 
                     //Don't add this card in the layout if it was dismissed before
-                    if(getIfCardDismissed(context,card.name))
+                    if(getIfCardDismissed(context,card.name) || card.isRemindLater)
                         return
 
                     val bigDisplayCard = LayoutInflater.from(context).inflate(
@@ -228,6 +224,7 @@ class ContextualRvAdapter(
                         //list.removeAt(adapterPosition)
                         //notifyItemRemoved(adapterPosition)
                         itemView.ll_card_container.removeView(bigDisplayCard)
+                        card.isRemindLater = true
                     }
 
                     /**
@@ -262,8 +259,6 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
-                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
-                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -325,8 +320,6 @@ class ContextualRvAdapter(
                     false
                 )
                 itemView.recyclerView.setHasFixedSize(true)
-                itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
-                    context.resources.getDimension(R.dimen.margin_8dp).toInt()))
                 itemView.recyclerView.visibility = View.VISIBLE
                 itemView.ll_card_container.visibility = View.GONE
 
@@ -396,8 +389,6 @@ class ContextualRvAdapter(
                 false
             )
             itemView.recyclerView.setHasFixedSize(true)
-            itemView.recyclerView.addItemDecoration(HorizontalMarginItemDecoration(
-                context.resources.getDimension(R.dimen.margin_8dp).toInt()))
         }
     }
 

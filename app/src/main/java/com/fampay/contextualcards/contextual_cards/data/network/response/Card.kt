@@ -37,5 +37,7 @@ data class Card(
     @SerializedName("is_disabled")
     val isDisabled: Boolean,
 
-    var isOpen: Boolean = false
+    var isOpen: Boolean = false,
+
+    var isRemindLater: Boolean = false
 )
