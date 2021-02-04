@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         />
      -->
-    <com.fampay.contextualcards.contextual_cards.ContextualCardsContainer
+    <com.webianks.contextualcards.contextual_cards.ContextualCardsContainer
         android:id="@+id/contextual_cards"
         android:layout_width="0dp"
         android:layout_height="0dp"

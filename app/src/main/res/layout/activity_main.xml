@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         layout="@layout/layout_fam_pay_header" />
 
-    <com.fampay.contextualcards.contextual_cards.ContextualCardsContainer
+    <com.webianks.contextualcards.contextual_cards.ContextualCardsContainer
         android:id="@+id/contextual_cards"
         android:layout_width="0dp"
         android:layout_height="0dp"
