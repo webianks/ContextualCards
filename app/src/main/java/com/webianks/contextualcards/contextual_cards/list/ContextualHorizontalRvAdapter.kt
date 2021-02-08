@@ -1,4 +1,4 @@
-package com.webianks.contextualcards.contextual_cards
+package com.webianks.contextualcards.contextual_cards.list
 
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.webianks.contextualcards.R
 import com.webianks.contextualcards.contextual_cards.data.network.response.Card
-import com.webianks.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC1
-import com.webianks.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC3
-import com.webianks.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC5
-import com.webianks.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC6
-import com.webianks.contextualcards.contextual_cards.ContextualRvAdapter.Companion.HC9
+import com.webianks.contextualcards.contextual_cards.list.ContextualRecyclerViewAdapter.Companion.HC1
+import com.webianks.contextualcards.contextual_cards.list.ContextualRecyclerViewAdapter.Companion.HC3
+import com.webianks.contextualcards.contextual_cards.list.ContextualRecyclerViewAdapter.Companion.HC5
+import com.webianks.contextualcards.contextual_cards.list.ContextualRecyclerViewAdapter.Companion.HC6
+import com.webianks.contextualcards.contextual_cards.list.ContextualRecyclerViewAdapter.Companion.HC9
 import com.webianks.contextualcards.contextual_cards.util.px
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.item_dynamic_width.view.*

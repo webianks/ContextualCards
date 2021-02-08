@@ -20,6 +20,7 @@ import com.webianks.contextualcards.R
 import com.webianks.contextualcards.contextual_cards.data.network.response.CardGroupResponse
 import com.webianks.contextualcards.contextual_cards.util.*
 import com.google.android.material.button.MaterialButton
+import com.webianks.contextualcards.contextual_cards.list.ContextualRecyclerViewAdapter
 import kotlinx.android.synthetic.main.content_contextual_cards.view.*
 
 class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayout(context, atts),
@@ -158,7 +159,7 @@ class ContextualCardsContainer(context: Context, atts: AttributeSet) : FrameLayo
 
         Log.i(TAG, "CardGroupResponse count ${cardGroupResponse.cardGroups.size}")
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = ContextualRvAdapter(context, cardGroupResponse.cardGroups,
+        recyclerView.adapter = ContextualRecyclerViewAdapter(context, cardGroupResponse.cardGroups,
                 { url ->
                     openUrl(context, url)
                 },

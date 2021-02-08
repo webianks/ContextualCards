@@ -1,10 +1,14 @@
 package com.webianks.contextualcards.contextual_cards.util
 
+import android.animation.ObjectAnimator
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Vibrator
+import android.view.View
+import com.webianks.contextualcards.contextual_cards.data.network.response.Card
 
 val Int.dp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
@@ -32,6 +36,32 @@ fun setCardDismissed(context: Context,key: String){
 fun getIfCardDismissed(context: Context,key: String): Boolean{
     val sharedPref = context.getSharedPreferences(DISMISSED_CARD_PREFERENCE, Context.MODE_PRIVATE)
     return sharedPref.getBoolean(key, false)
+}
+
+/**
+ * Animate the foreground view by revealing the background view with actions
+ * and also vibrate at the same time
+ */
+fun slideAndRevealView(foreground: View, background: View, card: Card) {
+    if (card.isOpen) {
+        val animation = ObjectAnimator.ofFloat(foreground, "translationX", 0f)
+        animation.duration = 100
+        background.visibility = View.GONE
+        animation.start()
+        val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+        v!!.vibrate(50)
+        card.isOpen = false
+    } else {
+        background.visibility = View.VISIBLE
+
+        //TODO remove this hadcoded value
+        val animation = ObjectAnimator.ofFloat(foreground, "translationX", 180.px.toFloat())
+        animation.duration = 100
+        animation.start()
+        val v = foreground.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+        v!!.vibrate(50)
+        card.isOpen = true
+    }
 }
 
 
