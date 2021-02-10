@@ -29,7 +29,7 @@ Android Studio - 4.1.1 Stable
 ```kotlin
 //Example Xml
 //Add this container inside the layout of your activity or fragment
- <com.fampay.contextualcards.contextual_cards.ContextualCardsContainer
+ <com.webianks.contextualcards.contextual_cards.ContextualCardsContainer
         android:id="@+id/contextual_cards"
         android:layout_width="0dp"
         android:layout_height="0dp"
